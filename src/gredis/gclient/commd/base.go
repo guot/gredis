@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	cmdsuffix []byte = []byte("\r\n")
+	cmdSuffix []byte = []byte("\r\n")
 	//命令的前缀
 	cmdPrefix byte = '$'
 	//命令的后缀
@@ -16,8 +16,8 @@ var (
 )
 
 //命令基类
-type cmd struct {
-	bytes.Buffer
+type Cmd struct {
+	buf bytes.Buffer
 	cmds    []string
 	pamCnt  int
 	cmdType string
@@ -25,10 +25,10 @@ type cmd struct {
 }
 
 //构造新的命令， 传入命令名
-func newStringCmd(name string) *cmd {
-	cmd := &cmd{cmdType: "String"}
-	cmd.WriteByte(startPrefix)
-
+func newStringCmd(name string) *Cmd {
+	cmd := &Cmd{cmdType: "String"}
+ 	cmd.buf.WriteByte(startPrefix)
+//	cmd.buf.Write([]byte(name))
 	cmd.cmds = append(cmd.cmds, name)
 
 	return cmd
@@ -39,26 +39,36 @@ func newStringCmd(name string) *cmd {
 //c:=newStringCmd("set")
 //c.AddCmd("mkey")
 //c.AddCmd("mvalue")
-func (c *cmd) AddCmd(parm string) {
-	c.WriteByte(cmdPrefix)
-	c.Write([]byte(lenStr(parm)))
-	c.WriteByte(cmdPrefix)
-	c.Write([]byte(parm))
+func (c *Cmd) AddCmd(parm string) {
+ 
 	c.cmds = append(c.cmds, parm)
+	
 }
 
 //获取字符串长度的字符类型
 func lenStr(val string) string {
-	return strconv.FormatInt(int64(len(val)), 10)
+	return strconv.Itoa(len(val))
 }
-func (c *cmd) toString() string {
-	//插入命令长度
-	
-	c.Write([]byte(strconv.Itoa(len(c.cmds))))
+
+ //生成命令文本
+func (c *Cmd) toString() string {
+	//插入命令长度 
+	c.buf.Write([]byte(strconv.Itoa(len(c.cmds))))
+	c.buf.Write(cmdSuffix)
 	for _,cmdp := range c.cmds{
-		c.Write([]byte(cmdp))
-		c.Write([]byte(cmdsuffix))
+		//添加　$符号
+		c.buf.WriteByte(cmdPrefix)
+		//添加　命令长度
+		c.buf.Write([]byte(strconv.FormatInt(int64(len(cmdp)),10)))
+		//添加　换行
+		c.buf.Write(cmdSuffix)
+		//添加　$符号
+		c.buf.WriteByte(cmdPrefix)
+		//添加　命令
+		c.buf.Write([]byte(cmdp))
+		//添加　换行
+		c.buf.Write([]byte(cmdSuffix))
 	}
-	return (c.(*bytes.Buffer)).toString()
+	return c.buf.String()
 
 }
