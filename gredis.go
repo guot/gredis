@@ -28,6 +28,9 @@ func (c *Gredis) connect() error {
 	c.conn, err = net.Dial("tcp", c.host)
 	return err
 }
+func (c *Gredis) Close() {
+	c.conn.Close()
+}
 
 //保存Key值
 func (c *Gredis) Set(key string, value string, expireTime int) error {
