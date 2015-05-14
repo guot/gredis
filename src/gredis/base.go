@@ -3,6 +3,7 @@ package gredis
 
 import (
 	"bytes"
+	"log"
 	"strconv"
 )
 
@@ -35,11 +36,6 @@ func (c *Cmd) addCmd(parm string) {
 
 }
 
-//获取字符串长度的字符类型
-func lenStr(val string) string {
-	return strconv.Itoa(len(val))
-}
-
 //生成命令文本
 func (c *Cmd) toString() string {
 	//插入命令长度
@@ -65,5 +61,23 @@ func (c *Cmd) toString() string {
 		c.buf.Write([]byte(cmdSuffix))
 	}
 	return c.buf.String()
+}
+
+//解析应答
+func pareseResp(respBytes []byte) []byte {
+
+	if '+' == respBytes[0] {
+		return []byte("ok")
+	} else if '-' == respBytes[0] {
+		log.Printf("应答结果不正确！！%s\r\n", respBytes)
+		return []byte("")
+	} else if '$' != respBytes[0] {
+		log.Printf("应答格式不正确！！%s\r\n", respBytes)
+		return []byte("")
+	}
+	cmdLine := bytes.Split(respBytes, []byte("\r\n"))
+
+	valLen, _ := strconv.Atoi(string(cmdLine[0][1:]))
+	return cmdLine[1][0:valLen]
 
 }

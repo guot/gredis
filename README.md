@@ -2,31 +2,42 @@
 
 	基于Redis 2.6.12以上版本开发，
 
->准备实现接口 <br/>
+>已实现接口 <br/>
 >**SET、GET**
 
-### 使用说明
->1、配置conf目录下的conf.properties文件。<br>
->  _#以实际情况进行配置_
 
-redis.server.host=192.168.1.1
 
-### Example
-	var client=Gclient
+### API
+	Gredis
  
-	SET key value [EX seconds] [PX milliseconds] [NX|XX]
+	Set key value [EX seconds] 
 	
 		key:待保存的key值，用于唯一标识 待保存 的值 Valeu
 		valeu:待保存的值
-		EX seconds:设置过期时间 单位是秒
-		PX milliseconds: 设置过期时间 单位是毫秒
-		NX:只有key不存在时才保存
-		XX:只有key存在时才保存
+		EX seconds:设置过期时间 单位是秒 
 	返回值
 		当保存成功进返回OK
 		当NX或XX选项条件不为真时，执行命令返回 Nil
-	 GET key
+	 Get key
 	获取返回值
 		key:保存key时所设置的值
+		 
+## 示例代码
+	import "gredis"
+	client, e := new(Gredis).NewClient("localhost:6379")
+	if e != nil {
+		t.Logf("建立连接失败", e.Error())
+	}
+	err := client.Set("mykey1", "myvalue", -1)
+	if err != nil {
+		t.Logf("发送命令失败", err.Error())
+	}
+	res, err := client.Get("mykey1")
+	if err != nil {
+		t.Logf("发送命令失败", err.Error())
+	}
+	if bytes.Compare(res, []byte("myvalue")) != 0 {
+		t.Logf("返回结果错误,期望值：myvalue．实际值，%s", res)
+	}
 
 

@@ -1,0 +1,20 @@
+mode: set
+gredis/gredis.go:21.67,25.2 3 1
+gredis/gredis.go:26.34,30.2 3 1
+gredis/gredis.go:33.70,40.2 5 1
+gredis/gredis.go:41.50,51.2 8 1
+gredis/string.go:11.67,15.22 4 1
+gredis/string.go:19.2,19.23 1 1
+gredis/string.go:15.22,18.3 2 1
+gredis/string.go:21.37,25.2 3 1
+gredis/base.go:33.35,37.2 1 1
+gredis/base.go:40.33,50.30 9 1
+gredis/base.go:63.2,63.23 1 1
+gredis/base.go:50.30,62.3 5 1
+gredis/base.go:67.42,69.25 1 1
+gredis/base.go:78.2,81.29 3 1
+gredis/base.go:69.25,71.3 1 1
+gredis/base.go:71.4,71.32 1 1
+gredis/base.go:71.32,74.3 2 1
+gredis/base.go:74.4,74.32 1 1
+gredis/base.go:74.32,77.3 2 1

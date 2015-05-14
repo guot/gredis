@@ -35,6 +35,27 @@ func TestCommand(t *testing.T) {
 	}
 }
 
+var responseTests = []struct {
+	id   int
+	resp []byte
+	exp  string
+}{
+	{1, []byte("$5\r\nvalue"), "value"},
+	{2, []byte("+ok"), "ok"},
+	{3, []byte("-error"), ""},
+	{4, []byte("*"), ""},
+}
+
+func TestPareseResp(t *testing.T) {
+
+	for _, tcast := range responseTests {
+		val := pareseResp(tcast.resp)
+		if string(val) != tcast.exp {
+			t.Errorf("测试%d没有通过，期望值为：%s,运行时值为：%s", tcast.id, tcast.exp, tcast.resp)
+		}
+	}
+
+}
 func BenchmarkCommand(b *testing.B) {
 	var c *Cmd
 	for i := 0; i < b.N; i++ {

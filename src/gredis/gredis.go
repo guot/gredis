@@ -35,23 +35,17 @@ func (c *Gredis) Set(key string, value string, expireTime int) error {
 	//fmt.Println("向服务器发送命令：", cmdstr)
 	_, err := c.conn.Write([]byte(cmdstr))
 	str, _, _ := bufio.NewReader(io.Reader(c.conn)).ReadLine()
-	fmt.Printf("%s", str)
+	log.Printf("Set return val:%s\r\n", str)
 	return err
 }
 func (c *Gredis) Get(key string) ([]byte, error) {
 	cmdstr := buildGetCmd(key)
 	_, err := c.conn.Write([]byte(cmdstr))
-	fmt.Printf("send get cmd  is :%s .\n", cmdstr)
+	log.Printf("send get cmd  is :%s .\n", cmdstr)
 	buf := make([]byte, 1024)
 	n, _ := c.conn.Read(buf)
-	fmt.Printf("get return value is :%s .\n", buf[:n])
+	val := pareseResp(buf[:n])
+	fmt.Printf("get return value is :%s .\n", val)
 
-	return buf[:n], err
-}
-func main() {
-	client, e := new(Gredis).NewClient("localhost:6379")
-	if e != nil {
-		log.Fatal(e)
-	}
-	client.Set("mykey1", "myvalue", -1)
+	return val, err
 }

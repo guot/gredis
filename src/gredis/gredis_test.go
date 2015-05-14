@@ -17,6 +17,16 @@ func TestMain(t *testing.T) {
 		t.Logf("发送命令失败", err.Error())
 	}
 }
+func TestExample(t *testing.T) {
+	client, e := new(Gredis).NewClient("localhost:6379")
+	if e != nil {
+		t.Logf("建立连接失败", e.Error())
+	}
+	err := client.Set("mykey1", "myvalue", -1)
+	if err != nil {
+		t.Logf("发送命令失败", err.Error())
+	}
+}
 func TestClientGet(t *testing.T) {
 	client, e := new(Gredis).NewClient("localhost:6379")
 	if e != nil {
@@ -27,10 +37,11 @@ func TestClientGet(t *testing.T) {
 	if err != nil {
 		t.Logf("发送命令失败", err.Error())
 	}
-	if bytes.Compare(res, []byte("mvalue1")) != 0 {
-		t.Logf("返回结果错误,期望值：myvalue1．实际值，%s", res)
+	if bytes.Compare(res, []byte("myvalue")) != 0 {
+		t.Logf("返回结果错误,期望值：myvalue．实际值，%s", res)
 	}
 }
+
 func BenchmarkClient(b *testing.B) {
 	b.StopTimer()
 	client, e := new(Gredis).NewClient("localhost:6379")
