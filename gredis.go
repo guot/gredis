@@ -52,3 +52,15 @@ func (c *Gredis) Get(key string) ([]byte, error) {
 
 	return val, err
 }
+func (c *Gredis) Del(keys ...string) error {
+	cmdstr := buildDelCmd(keys...)
+	_, err := c.conn.Write([]byte(cmdstr))
+	log.Printf("send del cmd  is :%s .\n", cmdstr)
+	buf := make([]byte, 1024)
+	n, _ := c.conn.Read(buf)
+	val := pareseResp(buf[:n])
+	//	byteBuf := bytes.NewBuffer(buf[:n])
+	//	val, _ := binary.ReadVarint(byteBuf)
+	fmt.Printf("get return del value is:%s.\n", val)
+	return err
+}

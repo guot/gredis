@@ -2,8 +2,8 @@
 package gredis
 
 import (
+	"bufio"
 	"bytes"
-	"log"
 	"strconv"
 )
 
@@ -65,19 +65,36 @@ func (c *Cmd) toString() string {
 
 //解析应答
 func pareseResp(respBytes []byte) []byte {
+	//For Simple Strings the first byte of the reply is "+"
+	//For Errors the first byte of the reply is "-"
+	//For Integers the first byte of the reply is ":"
+	//For Bulk Strings the first byte of the reply is "$"
+	//For Arrays the first byte of the reply is "*"
 
-	if '+' == respBytes[0] {
-		return []byte("ok")
-	} else if '-' == respBytes[0] {
-		log.Printf("应答结果不正确！！%s\r\n", respBytes)
-		return []byte("")
-	} else if '$' != respBytes[0] {
-		log.Printf("应答格式不正确！！%s\r\n", respBytes)
-		return []byte("")
+	stream := bufio.NewReader(bytes.NewBuffer(respBytes))
+
+	line, _, _ := stream.ReadLine()
+	op := line[0]
+	line = line[1:]
+	switch op {
+	case '+': //simple string
+		//log.Printf("+++++++应答simple string结果成功！！%s\r\n", line)
+	case '-': //error message
+		//log.Printf("-------应答结果不正确error message！！%s\r\n", line)
+
+	case '$': //bulk string
+		line, _, _ = stream.ReadLine()
+		//log.Printf("$$$$$$应答bulk string结果成功！！%s\r\n", line)
+	case ':': //intger
+
+	case '*': //arrays
+		//TODO 暂时不支持
+		line = []byte("")
+	default:
+		line = []byte("error")
+		//log.Printf("应答格式不正确！！%s\r\n", line)
 	}
-	cmdLine := bytes.Split(respBytes, []byte("\r\n"))
 
-	valLen, _ := strconv.Atoi(string(cmdLine[0][1:]))
-	return cmdLine[1][0:valLen]
+	return line
 
 }

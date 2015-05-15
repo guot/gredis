@@ -27,6 +27,20 @@ func TestBuildSetCmd(t *testing.T) {
 
 }
 
-func TestBuildGetCmd(t *testing.T) {
+var delTests = []struct {
+	id   int
+	keys []string
+	exp  string
+}{
+	{1, []string{"mkey"}, "*2\r\n$3\r\ndel\r\n$4\r\nmkey\r\n"},
+	{2, []string{"mkey", "mkey1"}, "*3\r\n$3\r\ndel\r\n$4\r\nmkey\r\n$5\r\nmkey1\r\n"},
+}
 
+func TestBuildDelCmd(t *testing.T) {
+	for _, tcast := range delTests {
+		val := buildDelCmd(tcast.keys...)
+		if !strings.EqualFold(val, tcast.exp) {
+			t.Errorf("测试%d没有通过，期望值为：%s,运行时值为：%s", tcast.id, tcast.exp, val)
+		}
+	}
 }

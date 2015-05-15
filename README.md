@@ -3,14 +3,14 @@
 	基于Redis 2.6.12以上版本开发，
 
 >已实现接口 <br/>
->**SET、GET**
+>**SET、GET、DEL**
 
 
 
 ### API
 	Gredis
  
-	Set key value [EX seconds] 
+	|Set key value [EX seconds] 
 	
 		key:待保存的key值，用于唯一标识 待保存 的值 Valeu
 		valeu:待保存的值
@@ -18,9 +18,12 @@
 	返回值
 		当保存成功进返回OK
 		当NX或XX选项条件不为真时，执行命令返回 Nil
-	 Get key
+	|Get key
 	获取返回值
 		key:保存key时所设置的值
+	|DEL key,key,key...
+	删除指定的Keyw值
+		Key:待删除的Key.
 		 
 ## 示例代码
 	import "gredis"

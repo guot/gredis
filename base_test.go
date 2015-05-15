@@ -41,9 +41,11 @@ var responseTests = []struct {
 	exp  string
 }{
 	{1, []byte("$5\r\nvalue"), "value"},
-	{2, []byte("+ok"), "ok"},
-	{3, []byte("-error"), ""},
-	{4, []byte("*"), ""},
+	{2, []byte("+ok\r\n"), "ok"},
+	{3, []byte("-error"), "error"},
+	{4, []byte("*0\r\n"), ""},
+	{5, []byte(":10\r\n"), "10"},
+	{6, []byte("m10\r\n"), "error"},
 }
 
 func TestPareseResp(t *testing.T) {

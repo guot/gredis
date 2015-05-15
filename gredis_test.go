@@ -9,6 +9,7 @@ import (
 
 func TestMain(t *testing.T) {
 	client, e := new(Gredis).NewClient("localhost:6379")
+	defer client.Close()
 	if e != nil {
 		t.Logf("建立连接失败", e.Error())
 	}
@@ -19,6 +20,7 @@ func TestMain(t *testing.T) {
 }
 func TestExample(t *testing.T) {
 	client, e := new(Gredis).NewClient("localhost:6379")
+	defer client.Close()
 	if e != nil {
 		t.Logf("建立连接失败", e.Error())
 	}
@@ -26,9 +28,15 @@ func TestExample(t *testing.T) {
 	if err != nil {
 		t.Logf("发送命令失败", err.Error())
 	}
+	err = client.Del("mykey", "mykey1")
+	if err != nil {
+		t.Logf("发送命令失败", err.Error())
+	}
+
 }
 func TestClientGet(t *testing.T) {
 	client, e := new(Gredis).NewClient("localhost:6379")
+	defer client.Close()
 	if e != nil {
 		t.Logf("建立连接失败", e.Error())
 	}
@@ -45,6 +53,7 @@ func TestClientGet(t *testing.T) {
 func BenchmarkClient(b *testing.B) {
 	b.StopTimer()
 	client, e := new(Gredis).NewClient("localhost:6379")
+	defer client.Close()
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
 
