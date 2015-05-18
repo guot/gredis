@@ -64,3 +64,22 @@ func (c *Gredis) Del(keys ...string) error {
 	fmt.Printf("get return del value is:%s.\n", val)
 	return err
 }
+func (c *Gredis) SAdd(key string, value string) error {
+	cmdstr := buildSAddCmd(key, value)
+	_, err := c.conn.Write([]byte(cmdstr))
+	log.Printf("send sadd cmd is :%s.\n", cmdstr)
+	buf := make([]byte, 1024)
+	n, _ := c.conn.Read(buf)
+	pareseResp(buf[:n])
+	return err
+}
+
+func (c *Gredis) SPop(key string) ([]byte, error) {
+	cmdstr := buildSPopCmd(key)
+	_, err := c.conn.Write([]byte(cmdstr))
+	log.Printf("send sadd cmd is :%s.\n", cmdstr)
+	buf := make([]byte, 1024)
+	n, _ := c.conn.Read(buf)
+	val := pareseResp(buf[:n])
+	return val, err
+}

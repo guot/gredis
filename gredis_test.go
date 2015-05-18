@@ -3,6 +3,7 @@ package gredis
 
 import (
 	"bytes"
+	"log"
 	"strconv"
 	"testing"
 )
@@ -32,6 +33,23 @@ func TestExample(t *testing.T) {
 	if err != nil {
 		t.Logf("发送命令失败", err.Error())
 	}
+	err = client.SAdd("setkey", "1234")
+	if err != nil {
+		t.Logf("sAdd命令发送失败")
+	}
+	err = client.SAdd("setkey", "a1")
+	err = client.SAdd("setkey", "a2")
+	err = client.SAdd("setkey", "a3")
+	val, err1 := client.SPop("setkey")
+	if err1 != nil {
+		t.Logf("sAdd命令发送失败")
+	}
+	log.Printf("pop  value is : %s \r\n", val)
+	val, err1 = client.SPop("setkey")
+	if err1 != nil {
+		t.Logf("sAdd命令发送失败")
+	}
+	log.Printf("pop  value is : %s \r\n", val)
 
 }
 func TestClientGet(t *testing.T) {

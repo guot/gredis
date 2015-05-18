@@ -4,6 +4,7 @@ package gredis
 import (
 	"bufio"
 	"bytes"
+	"container/list"
 	"strconv"
 )
 
@@ -94,7 +95,29 @@ func pareseResp(respBytes []byte) []byte {
 		line = []byte("error")
 		//log.Printf("应答格式不正确！！%s\r\n", line)
 	}
-
 	return line
+}
 
+//解析结果为数组的应答
+func pareseRespArr(respBytes []byte) *list.List {
+	//For Arrays the first byte of the reply is "*"
+
+	stream := bufio.NewReader(bytes.NewBuffer(respBytes))
+
+	result := list.New()
+
+	line, _, _ := stream.ReadLine()
+	op := line[0]
+	if op != '*' {
+		return result
+	}
+	line = line[1:] //读取数组长度
+	alen, _ := strconv.Atoi(string(line))
+	for i := 0; i < alen; i++ {
+		line, _, _ := stream.ReadLine()
+		line = line[1:] //读取数组数据
+		result.PushBack(line)
+	}
+
+	return result
 }
